@@ -4,6 +4,7 @@ import com.samantha.springframewwork.domain.Person;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -22,10 +23,32 @@ class PersonRepositoriesImplTest {
     }
 
     @Test
+    void testGetByIdFoundStepVerifier() {
+        Mono<Person> personMono = personRepository.getById(3);
+
+        StepVerifier.create(personMono).expectNextCount(1).verifyComplete();
+
+        personMono.subscribe(person -> {
+            System.out.println(person.getFirstName());
+        });
+    }
+
+    @Test
     void testGetByIdNotFound() {
         Mono<Person> personMono = personRepository.getById(7);
 
         assertFalse(personMono.hasElement().block());
+    }
+
+    @Test
+    void testGetByIdNotFoundStepVerifier() {
+        Mono<Person> personMono = personRepository.getById(7);
+
+        StepVerifier.create(personMono).expectNextCount(0).verifyComplete();
+
+        personMono.subscribe(person -> {
+            System.out.println(person.getFirstName());
+        });
     }
 //    Not the preferred method because it is a Blocking method
     @Test
