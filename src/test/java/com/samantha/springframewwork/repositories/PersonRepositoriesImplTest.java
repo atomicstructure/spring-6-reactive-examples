@@ -14,6 +14,19 @@ class PersonRepositoriesImplTest {
     PersonRepository personRepository = new PersonRepositoriesImpl();
 
 
+    @Test
+    void testGetByIdFound() {
+        Mono<Person> personMono = personRepository.getById(3);
+
+        assertTrue(personMono.hasElement().block());
+    }
+
+    @Test
+    void testGetByIdNotFound() {
+        Mono<Person> personMono = personRepository.getById(7);
+
+        assertFalse(personMono.hasElement().block());
+    }
 //    Not the preferred method because it is a Blocking method
     @Test
     void testMonoByIdBlock() {
